@@ -12,6 +12,7 @@ import {
   UserOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  AlertOutlined,
 } from '@ant-design/icons'
 import { useRouter, usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -29,6 +30,7 @@ const menuItems = [
   { key: '/members', icon: <TeamOutlined />, label: '社員管理' },
   { key: '/events', icon: <CalendarOutlined />, label: '活動管理' },
   { key: '/facilities', icon: <ToolOutlined />, label: '場地與設備' },
+  { key: '/repairs', icon: <AlertOutlined />, label: '報修申請' },
   { key: '/finance', icon: <DollarOutlined />, label: '財務管理' },
   { key: '/profile', icon: <UserOutlined />, label: '個人資料' },
 ]
