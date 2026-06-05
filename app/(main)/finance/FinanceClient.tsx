@@ -16,6 +16,7 @@ const EXPENSE_CATS = ['器材', '場地', '活動費用', '行政', '餐飲', '�
 interface Props {
   initialIncome: 收入紀錄Row[]
   initialExpense: 支出紀錄Row[]
+  isOfficer: boolean
 }
 
 function RecordModal({ title, open, onClose, categories, onFinish, loading }: {
@@ -44,7 +45,7 @@ function RecordModal({ title, open, onClose, categories, onFinish, loading }: {
   )
 }
 
-export default function FinanceClient({ initialIncome, initialExpense }: Props) {
+export default function FinanceClient({ initialIncome, initialExpense, isOfficer }: Props) {
   const [income, setIncome] = useState(initialIncome)
   const [expense, setExpense] = useState(initialExpense)
   const [incomeOpen, setIncomeOpen] = useState(false)
@@ -103,7 +104,7 @@ export default function FinanceClient({ initialIncome, initialExpense }: Props) 
 
   return (
     <div>
-      <Title level={3} style={{ color: '#f3f4f6', marginBottom: 16 }}>財務管理</Title>
+      <Title level={3} style={{ color: '#f3f4f6', marginBottom: 16 }}>收支查詢</Title>
 
       <Row gutter={[16, 16]} className="mb-6">
         <Col xs={24} sm={8}>
@@ -132,9 +133,11 @@ export default function FinanceClient({ initialIncome, initialExpense }: Props) 
           key: 'income', label: '收入紀錄',
           children: (
             <div>
-              <div className="flex justify-end mb-3">
-                <Button type="primary" icon={<PlusOutlined />} onClick={() => setIncomeOpen(true)}>新增收入</Button>
-              </div>
+              {isOfficer && (
+                <div className="flex justify-end mb-3">
+                  <Button type="primary" icon={<PlusOutlined />} onClick={() => setIncomeOpen(true)}>新增收入</Button>
+                </div>
+              )}
               <Table dataSource={income} columns={incomeColumns} rowKey="記錄編號"
                 pagination={{ pageSize: 20 }} scroll={{ x: 600 }} />
             </div>
@@ -144,9 +147,11 @@ export default function FinanceClient({ initialIncome, initialExpense }: Props) 
           key: 'expense', label: '支出紀錄',
           children: (
             <div>
-              <div className="flex justify-end mb-3">
-                <Button danger icon={<PlusOutlined />} onClick={() => setExpenseOpen(true)}>新增支出</Button>
-              </div>
+              {isOfficer && (
+                <div className="flex justify-end mb-3">
+                  <Button danger icon={<PlusOutlined />} onClick={() => setExpenseOpen(true)}>新增支出</Button>
+                </div>
+              )}
               <Table dataSource={expense} columns={expenseColumns} rowKey="記錄編號"
                 pagination={{ pageSize: 20 }} scroll={{ x: 600 }} />
             </div>

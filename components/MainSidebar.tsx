@@ -5,6 +5,7 @@ import { Layout, Menu, Avatar, Button, Tag, Typography } from 'antd'
 import {
   TeamOutlined,
   CalendarOutlined,
+  HomeOutlined,
   ToolOutlined,
   DollarOutlined,
   DashboardOutlined,
@@ -13,6 +14,7 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   AlertOutlined,
+  ReadOutlined,
 } from '@ant-design/icons'
 import { useRouter, usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -29,9 +31,11 @@ const menuItems = [
   { key: '/dashboard', icon: <DashboardOutlined />, label: '首頁' },
   { key: '/members', icon: <TeamOutlined />, label: '社員管理' },
   { key: '/events', icon: <CalendarOutlined />, label: '活動管理' },
-  { key: '/facilities', icon: <ToolOutlined />, label: '場地與設備' },
+  { key: '/venues', icon: <HomeOutlined />, label: '場地預約' },
+  { key: '/equipment', icon: <ToolOutlined />, label: '設備借用' },
+  { key: '/teaching', icon: <ReadOutlined />, label: '教學預約' },
   { key: '/repairs', icon: <AlertOutlined />, label: '報修申請' },
-  { key: '/finance', icon: <DollarOutlined />, label: '財務管理' },
+  { key: '/finance', icon: <DollarOutlined />, label: '收支查詢' },
   { key: '/profile', icon: <UserOutlined />, label: '個人資料' },
 ]
 
@@ -96,8 +100,8 @@ export default function MainSidebar({ member }: Props) {
         style={{ background: '#111827', borderRight: 'none', marginTop: 8 }}
         items={menuItems
           .filter(item => {
-            // 財務管理 only for 幹部
-            if (item.key === '/finance' && !member.幹部權限) return false
+            // 社員管理 only for 幹部
+            if (item.key === '/members' && !member.幹部權限) return false
             return true
           })
           .map(item => ({

@@ -5,8 +5,8 @@ import { App, Table, Tag, Button, Input, Select, Space, Typography, Popconfirm }
 import { SearchOutlined } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
 import { createClient } from '@/lib/supabase/client'
-import { updateMemberStatus, updateMemberOfficer } from '@/lib/db/members'
-import type { MemberStatus } from '@/lib/types/database'
+import { updateMemberStatus, updateMemberPosition } from '@/lib/db/members'
+import type { MemberStatus, MemberPosition } from '@/lib/types/database'
 
 const { Title } = Typography
 const { Search } = Input
@@ -22,6 +22,7 @@ interface Member {
   加入日期: string
   狀態: MemberStatus
   幹部權限: boolean
+  職位: MemberPosition | null
 }
 
 const STATUS_COLORS: Record<MemberStatus, string> = {
@@ -44,11 +45,12 @@ export default function MemberList({ initialMembers }: { initialMembers: Member[
     message.success('狀態已更新')
   }
 
-  async function handleOfficerToggle(id: number, current: boolean) {
-    const { error } = await updateMemberOfficer(supabase, id, !current)
+  async function handlePositionChange(id: number, 職位: MemberPosition) {
+    const { error } = await updateMemberPosition(supabase, id, 職位)
     if (error) { message.error('更新失敗'); return }
-    setMembers(prev => prev.map(m => m.社員編號 === id ? { ...m, 幹部權限: !current } : m))
-    message.success(current ? '已取消幹部權限' : '已設為幹部')
+    const 幹部權限 = 職位 === '幹部' || 職位 === '教學'
+    setMembers(prev => prev.map(m => m.社員編號 === id ? { ...m, 職位, 幹部權限 } : m))
+    message.success('職位已更新')
   }
 
   const filtered = members.filter(m => {
@@ -70,11 +72,23 @@ export default function MemberList({ initialMembers }: { initialMembers: Member[
       render: (status: MemberStatus) => <Tag color={STATUS_COLORS[status]}>{status}</Tag>,
     },
     {
-      title: '幹部', dataIndex: '幹部權限', key: '幹部權限', width: 70,
-      render: (v: boolean) => v ? <Tag color="purple">幹部</Tag> : null,
+      title: '職位', dataIndex: '職位', key: '職位', width: 120,
+      render: (v: MemberPosition | null, record) => (
+        <Select
+          value={v ?? '一般社員'}
+          size="small"
+          style={{ width: 100 }}
+          onChange={(pos: MemberPosition) => handlePositionChange(record.社員編號, pos)}
+          options={[
+            { value: '一般社員', label: '一般社員' },
+            { value: '幹部', label: '幹部' },
+            { value: '教學', label: '教學' },
+          ]}
+        />
+      ),
     },
     {
-      title: '操作', key: 'action', width: 230, fixed: 'right',
+      title: '操作', key: 'action', width: 160, fixed: 'right',
       render: (_, record) => (
         <Space size="small">
           {record.狀態 === '待審核' && (
@@ -92,14 +106,6 @@ export default function MemberList({ initialMembers }: { initialMembers: Member[
               <Button size="small">恢復</Button>
             </Popconfirm>
           )}
-          <Popconfirm
-            title={record.幹部權限 ? '確認取消幹部權限？' : '確認設為幹部？'}
-            onConfirm={() => handleOfficerToggle(record.社員編號, record.幹部權限)}
-          >
-            <Button size="small" style={{ borderColor: '#7c3aed', color: '#7c3aed' }}>
-              {record.幹部權限 ? '取消幹部' : '設為幹部'}
-            </Button>
-          </Popconfirm>
         </Space>
       ),
     },

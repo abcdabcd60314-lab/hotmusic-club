@@ -12,7 +12,7 @@ export default async function FinancePage() {
   if (!user) redirect('/login')
 
   const { data: self } = await getMemberByUserIdShort(supabase, user.id)
-  if (!self?.幹部權限) redirect('/dashboard')
+  if (!self) redirect('/login')
 
   const [incomeRes, expenseRes] = await Promise.all([
     getIncomeRecords(supabase),
@@ -23,6 +23,7 @@ export default async function FinancePage() {
     <FinanceClient
       initialIncome={incomeRes.data ?? []}
       initialExpense={expenseRes.data ?? []}
+      isOfficer={self.幹部權限}
     />
   )
 }

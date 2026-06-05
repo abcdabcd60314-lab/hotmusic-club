@@ -1,4 +1,5 @@
 export type MemberStatus = '在籍' | '離社' | '待審核'
+export type MemberPosition = '一般社員' | '幹部' | '教學'
 export type OfficerTitle = '社長' | '副社長' | '財務長' | '器材組長' | '活動組長' | '公關組長'
 export type InstructorStatus = '合作中' | '暫停' | '結束'
 export type EventType = '表演' | '活動'
@@ -16,6 +17,7 @@ export interface 社員Row {
   建立時間: string
   科系: string | null
   幹部權限: boolean
+  職位: MemberPosition | null
   user_id: string | null
 }
 
@@ -30,6 +32,7 @@ export type 社員Insert = {
   狀態?: MemberStatus
   科系?: string | null
   幹部權限?: boolean
+  職位?: MemberPosition | null
   user_id?: string | null
 }
 
