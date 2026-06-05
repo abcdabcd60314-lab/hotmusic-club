@@ -2,9 +2,11 @@
 
 import { App, ConfigProvider, theme } from 'antd'
 import zhTW from 'antd/locale/zh_TW'
+import { AntdRegistry } from '@ant-design/nextjs-registry'
 
 export default function AntdProvider({ children }: { children: React.ReactNode }) {
   return (
+    <AntdRegistry>
     <ConfigProvider
       locale={zhTW}
       theme={{
@@ -22,5 +24,6 @@ export default function AntdProvider({ children }: { children: React.ReactNode }
     >
       <App>{children}</App>
     </ConfigProvider>
+    </AntdRegistry>
   )
 }
