@@ -12,9 +12,8 @@ export interface 設備預約Row {
   預約編號: number
   設備編號: number
   社員編號: number
-  開始時間: string
-  結束時間: string
-  數量: number
+  借出時間: string
+  歸還時間: string
   狀態: string
   建立時間: string
 }
@@ -28,25 +27,24 @@ export async function getEquipmentBookings(supabase: AnyClient, from: string, to
   const res = await supabase
     .from('設備預約')
     .select('*')
-    .neq('狀態', '已取消')
-    .gte('開始時間', from)
-    .lte('開始時間', to)
+    .not('狀態', 'in', '("已拒絕","已歸還")')
+    .gte('借出時間', from)
+    .lte('借出時間', to)
   return res as { data: 設備預約Row[] | null; error: unknown }
 }
 
 export async function createEquipmentBooking(supabase: AnyClient, data: {
   設備編號: number
   社員編號: number
-  開始時間: string
-  結束時間: string
-  數量: number
+  借出時間: string
+  歸還時間: string
 }) {
-  const res = await supabase.from('設備預約').insert({ ...data, 狀態: '待確認' })
+  const res = await supabase.from('設備預約').insert({ ...data, 狀態: '待審核' })
   return res as { error: unknown }
 }
 
 export async function cancelEquipmentBooking(supabase: AnyClient, id: number) {
-  const res = await supabase.from('設備預約').update({ 狀態: '已取消' }).eq('預約編號', id)
+  const res = await supabase.from('設備預約').update({ 狀態: '已拒絕' }).eq('預約編號', id)
   return res as { error: unknown }
 }
 
@@ -55,7 +53,7 @@ export async function getMyEquipmentBookings(supabase: AnyClient, memberId: numb
     .from('設備預約')
     .select('*, 設備(設備名稱)')
     .eq('社員編號', memberId)
-    .neq('狀態', '已取消')
-    .order('開始時間', { ascending: false })
+    .not('狀態', 'in', '("已拒絕","已歸還")')
+    .order('借出時間', { ascending: false })
   return res as { data: (設備預約Row & { 設備: { 設備名稱: string } | null })[] | null; error: unknown }
 }
