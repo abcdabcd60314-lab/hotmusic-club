@@ -5,7 +5,7 @@ import { App, Table, Tag, Button, Input, Select, Space, Typography, Popconfirm }
 import { SearchOutlined } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
 import { createClient } from '@/lib/supabase/client'
-import { updateMemberStatus } from '@/lib/db/members'
+import { updateMemberStatus, updateMemberOfficer } from '@/lib/db/members'
 import type { MemberStatus } from '@/lib/types/database'
 
 const { Title } = Typography
@@ -44,6 +44,13 @@ export default function MemberList({ initialMembers }: { initialMembers: Member[
     message.success('狀態已更新')
   }
 
+  async function handleOfficerToggle(id: number, current: boolean) {
+    const { error } = await updateMemberOfficer(supabase, id, !current)
+    if (error) { message.error('更新失敗'); return }
+    setMembers(prev => prev.map(m => m.社員編號 === id ? { ...m, 幹部權限: !current } : m))
+    message.success(current ? '已取消幹部權限' : '已設為幹部')
+  }
+
   const filtered = members.filter(m => {
     const matchSearch = m.姓名.includes(search) || m.學號.includes(search) || m.電子郵件.includes(search)
     const matchStatus = statusFilter === 'all' || m.狀態 === statusFilter
@@ -63,7 +70,11 @@ export default function MemberList({ initialMembers }: { initialMembers: Member[
       render: (status: MemberStatus) => <Tag color={STATUS_COLORS[status]}>{status}</Tag>,
     },
     {
-      title: '操作', key: 'action', width: 200, fixed: 'right',
+      title: '幹部', dataIndex: '幹部權限', key: '幹部權限', width: 70,
+      render: (v: boolean) => v ? <Tag color="purple">幹部</Tag> : null,
+    },
+    {
+      title: '操作', key: 'action', width: 230, fixed: 'right',
       render: (_, record) => (
         <Space size="small">
           {record.狀態 === '待審核' && (
@@ -81,6 +92,14 @@ export default function MemberList({ initialMembers }: { initialMembers: Member[
               <Button size="small">恢復</Button>
             </Popconfirm>
           )}
+          <Popconfirm
+            title={record.幹部權限 ? '確認取消幹部權限？' : '確認設為幹部？'}
+            onConfirm={() => handleOfficerToggle(record.社員編號, record.幹部權限)}
+          >
+            <Button size="small" style={{ borderColor: '#7c3aed', color: '#7c3aed' }}>
+              {record.幹部權限 ? '取消幹部' : '設為幹部'}
+            </Button>
+          </Popconfirm>
         </Space>
       ),
     },

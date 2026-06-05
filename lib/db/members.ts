@@ -40,6 +40,11 @@ export async function updateMemberStatus(supabase: AnyClient, id: number, status
   return res as { data: null; error: { message: string } | null }
 }
 
+export async function updateMemberOfficer(supabase: AnyClient, id: number, 幹部權限: boolean) {
+  const res = await supabase.from('社員').update({ 幹部權限 }).eq('社員編號', id)
+  return res as { data: null; error: { message: string } | null }
+}
+
 export async function updateMemberProfile(supabase: AnyClient, id: number, data: 社員Update) {
   const res = await supabase.from('社員').update(data).eq('社員編號', id)
   return res as { data: null; error: { message: string } | null }
