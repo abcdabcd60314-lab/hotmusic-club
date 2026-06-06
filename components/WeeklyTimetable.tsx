@@ -42,7 +42,7 @@ export default function WeeklyTimetable({
   const today = dayjs()
 
   const allCells: React.ReactNode[] = [
-    <div key="h0" />,
+    <div key="corner" />,
     ...days.map((d, i) => (
       <div key={`h${i}`} style={{
         textAlign: 'center', fontSize: 12, padding: '4px 2px', fontWeight: 500,
