@@ -73,7 +73,7 @@ export default function EquipmentClient({ equipment, member }: Props) {
       .eq('社員編號', member.社員編號)
       .not('狀態', 'in', '("已拒絕","已歸還")')
       .order('借出時間', { ascending: false })
-    setMyBookings(mine ?? [])
+    setMyBookings((mine ?? []) as unknown as (設備預約Row & { 設備: { 設備名稱: string } | null })[])
   }, [weekStart])
 
   useEffect(() => { loadBookings() }, [loadBookings])

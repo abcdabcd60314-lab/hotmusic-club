@@ -19,5 +19,5 @@ export default async function TeachingPage() {
 
   const { data: teachers } = await getAllTeachers(supabase)
 
-  return <TeachingClient member={member} teachers={teachers ?? []} />
+  return <TeachingClient member={member as unknown as { 社員編號: number; 姓名: string; 幹部權限: boolean; 職位: string | null }} teachers={teachers ?? []} />
 }

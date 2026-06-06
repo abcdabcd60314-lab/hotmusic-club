@@ -254,10 +254,10 @@ export default function TeachingClient({ member, teachers }: Props) {
             <DatePicker style={{ width: '100%' }} />
           </Form.Item>
           <Form.Item name="開始" label="開始時間" rules={[{ required: true }]}>
-            <TimePicker format="HH:00" minuteStep={60} style={{ width: '100%' }} />
+            <TimePicker format="HH:00" minuteStep={60 as any} style={{ width: '100%' }} />
           </Form.Item>
           <Form.Item name="結束" label="結束時間" rules={[{ required: true }]}>
-            <TimePicker format="HH:00" minuteStep={60} style={{ width: '100%' }} />
+            <TimePicker format="HH:00" minuteStep={60 as any} style={{ width: '100%' }} />
           </Form.Item>
         </Form>
       </Modal>
