@@ -37,7 +37,10 @@ function buildCells(
       const slot = mySlots.find(s =>
         dayjs(s.開始時間).isBefore(slotEnd) && dayjs(s.結束時間).isAfter(slotStart)
       )
-      if (!slot) continue
+      if (!slot) {
+        cells[`${day}-${hour}`] = { status: 'taken', label: '' }
+        continue
+      }
       const booking = bookings.find(b =>
         b.時段編號 === slot.時段編號 && b.狀態 !== '已取消'
       )

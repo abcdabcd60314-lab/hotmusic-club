@@ -147,7 +147,7 @@ export default function EquipmentClient({ equipment, member }: Props) {
                 weekStart={weekStart}
                 onWeekChange={setWeekStart}
                 cells={buildCells(bookings, eq, member.社員編號, weekStart)}
-                onCellClick={(day, hour) => eq.狀態 === '可使用' && handleCellClick(eq, day, hour)}
+                onCellClick={(day, hour) => handleCellClick(eq, day, hour)}
               />
             </div>
           ),
