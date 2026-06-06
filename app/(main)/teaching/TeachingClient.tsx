@@ -138,7 +138,7 @@ export default function TeachingClient({ member, teachers }: Props) {
       結束時間: end.toISOString(),
     })
     setSubmitting(false)
-    if (error) { message.error('新增失敗'); return }
+    if (error) { message.error(`新增失敗：${(error as any)?.message ?? JSON.stringify(error)}`); return }
     message.success('時段已新增')
     slotForm.resetFields()
     setAddSlotOpen(false)
